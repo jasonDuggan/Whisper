@@ -77,6 +77,7 @@ open class ShoutView: UIView {
   open fileprivate(set) var panGestureActive = false
   open fileprivate(set) var shouldSilent = false
   open fileprivate(set) var completion: (() -> ())?
+  open fileprivate(set) var vc: UIViewController?
 
   private var subtitleLabelOriginalHeight: CGFloat = 0
   private var internalHeight: CGFloat = 0
@@ -118,6 +119,7 @@ open class ShoutView: UIView {
   open func craft(_ announcement: Announcement, to: UIViewController, completion: (() -> ())?) {
     panGestureActive = false
     shouldSilent = false
+    vc = to
     configureView(announcement)
     shout(to: to)
 
@@ -151,7 +153,13 @@ open class ShoutView: UIView {
   public func setupFrames() {
     internalHeight = (UIApplication.shared.isStatusBarHidden ? 55 : 65)
 
-    let totalWidth = UIScreen.main.bounds.width
+    //let totalWidth = UIScreen.main.bounds.width
+    let totalWidth: CGFloat
+    if let vc = vc {
+      totalWidth = vc.view.bounds.width
+    } else {
+      totalWidth = UIScreen.main.bounds.width
+    }
     let offset: CGFloat = UIApplication.shared.isStatusBarHidden ? 2.5 : 5
     let textOffsetX: CGFloat = imageView.image != nil ? Dimensions.textOffset : 18
     let imageSize: CGFloat = imageView.image != nil ? Dimensions.imageSize : 0
